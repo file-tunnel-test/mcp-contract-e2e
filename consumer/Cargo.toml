@@ -1,0 +1,10 @@
+[package]
+name = "ore-mcp-process-consumer-e2e"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.88.0"
+publish = false
+
+[dev-dependencies]
+ore-mcp-process = { path = "../vendor/mcp-rust-libs/packages/rust/crates/ore-mcp-process" }
+tokio = { version = "=1.48.0", features = ["macros", "rt-multi-thread", "time"] }
