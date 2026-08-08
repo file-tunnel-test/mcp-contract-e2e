@@ -1,0 +1,10 @@
+[package]
+name = "ore-mcp-config-consumer-e2e"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.88.0"
+publish = false
+
+[dev-dependencies]
+ore-mcp-config = { path = "../vendor/mcp-rust-libs/packages/rust/crates/ore-mcp-config" }
+serde = { version = "1", features = ["derive"] }
