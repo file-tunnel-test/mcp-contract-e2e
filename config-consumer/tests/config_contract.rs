@@ -1,6 +1,6 @@
 use std::{collections::BTreeMap, path::PathBuf};
 
-use ore_mcp_config::{ConfigError, StrictConfig, is_environment_only_key};
+use ore_mcp_config::{is_environment_only_key, ConfigError, StrictConfig};
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Eq, PartialEq)]
@@ -144,20 +144,15 @@ fn external_consumer_redacts_unknown_option_values_and_positionals() {
             &BTreeMap::new(),
         )
         .expect_err("unexpected positional must fail closed");
-    assert_eq!(
-        positional,
-        ConfigError::UnexpectedPositionals { count: 1 }
-    );
+    assert_eq!(positional, ConfigError::UnexpectedPositionals { count: 1 });
     assert!(!positional.to_string().contains("customer"));
 }
 
 #[test]
 fn external_consumer_summarizes_coercion_failure_without_raw_value() {
     let config = contract();
-    let environment = BTreeMap::from([(
-        "TEST_COUNT".to_string(),
-        "not-a-private-number".to_string(),
-    )]);
+    let environment =
+        BTreeMap::from([("TEST_COUNT".to_string(), "not-a-private-number".to_string())]);
     let resolved = config
         .resolve(&["config-consumer".to_string()], &environment)
         .expect("explicit environment values resolve before typed coercion");
@@ -198,8 +193,14 @@ fn external_consumer_rejects_invalid_filter_without_reflection() {
 #[test]
 fn external_consumer_debug_and_key_policy_never_expose_values_or_paths() {
     let environment = BTreeMap::from([
-        ("TEST_ROOT".to_string(), "/private/customer/root".to_string()),
-        ("API_TOKEN".to_string(), "private-environment-token".to_string()),
+        (
+            "TEST_ROOT".to_string(),
+            "/private/customer/root".to_string(),
+        ),
+        (
+            "API_TOKEN".to_string(),
+            "private-environment-token".to_string(),
+        ),
     ]);
     let config = contract();
     let resolved = config
@@ -223,7 +224,10 @@ fn external_consumer_debug_and_key_policy_never_expose_values_or_paths() {
         "GPG_PASSPHRASE",
         "OTEL_EXPORTER_OTLP_HEADERS",
     ] {
-        assert!(is_environment_only_key(key), "expected {key} to be protected");
+        assert!(
+            is_environment_only_key(key),
+            "expected {key} to be protected"
+        );
     }
     for key in ["API_URL", "RUST_LOG", "ORG_ROOT", "SERVER_NAME"] {
         assert!(
