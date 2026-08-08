@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  ORE_MCP_RUST_LIBS_REV: 9aa28fb1680bc846d950e7544de55aa9c6cc93c8
+  ORE_MCP_RUST_LIBS_REV: 458419497de273d2ca6089a727f38894083d8da6
 
 jobs:
   consumer:
