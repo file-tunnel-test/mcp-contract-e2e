@@ -1,0 +1,58 @@
+name: ore-mcp-process external consumer
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ore-mcp-process-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  ORE_MCP_RUST_LIBS_REV: 9aa28fb1680bc846d950e7544de55aa9c6cc93c8
+
+jobs:
+  consumer:
+    name: ${{ matrix.os }} / Rust ${{ matrix.rust }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-14, windows-2022]
+        rust: [1.88.0, 1.97.1]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - name: Check out test harness without credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          show-progress: false
+
+      - name: Check out immutable shared source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ORESoftware/mcp-rust-libs
+          ref: ${{ env.ORE_MCP_RUST_LIBS_REV }}
+          path: vendor/mcp-rust-libs
+          persist-credentials: false
+          show-progress: false
+
+      - name: Install pinned Rust toolchain
+        uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+        with:
+          toolchain: ${{ matrix.rust }}
+          components: rustfmt, clippy
+
+      - name: Verify formatting
+        run: cargo fmt --manifest-path consumer/Cargo.toml --all -- --check
+
+      - name: Run strict Clippy
+        run: cargo clippy --manifest-path consumer/Cargo.toml --all-targets -- -D warnings
+
+      - name: Run external consumer contract
+        run: cargo test --manifest-path consumer/Cargo.toml --all-targets
