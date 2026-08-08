@@ -1,3 +1,5 @@
+# Retry after proving that raw resolved values remain explicit while defaults
+# are applied during typed coercion.
 # Temporary, branch-scoped workflow. It generates and validates the external
 # consumer lock, publishes only the formatted consumer/lock files, and is removed
 # through the repository API before review.
