@@ -21,22 +21,18 @@ fn contract() -> StrictConfig {
 }
 
 #[test]
-fn external_consumer_audits_and_applies_declared_defaults() {
+fn external_consumer_keeps_raw_values_explicit_and_applies_defaults_during_coercion() {
     let config = contract();
     config.audit().expect("external flags contract must audit");
 
     let (resolved, typed): (_, TypedConfig) = config
         .resolve_typed(&["config-consumer".to_string()], &BTreeMap::new())
-        .expect("declared defaults should resolve and coerce");
+        .expect("declared defaults should be applied during typed coercion");
 
-    assert_eq!(resolved.len(), 4);
-    assert_eq!(resolved.get("TEST_ROOT"), Some("/default/root"));
-    assert_eq!(resolved.get("TEST_COUNT"), Some("3"));
-    assert_eq!(resolved.get("RUST_LOG"), Some("info,hyper=warn"));
-    assert_eq!(
-        resolved.get("API_URL"),
-        Some("https://default.example.invalid")
-    );
+    assert_eq!(resolved.len(), 0);
+    for key in ["TEST_ROOT", "TEST_COUNT", "RUST_LOG", "API_URL"] {
+        assert_eq!(resolved.get(key), None);
+    }
     assert_eq!(resolved.provided_keys().count(), 0);
     assert_eq!(
         typed,
