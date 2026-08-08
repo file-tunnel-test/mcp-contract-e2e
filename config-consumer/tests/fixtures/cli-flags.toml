@@ -1,0 +1,30 @@
+[parse]
+allow_unknown = false
+
+[flags.root]
+env = "TEST_ROOT"
+type = "string"
+default = "/default/root"
+
+[flags.count]
+env = "TEST_COUNT"
+type = "integer"
+default = 3
+
+[flags.log-filter]
+env = "RUST_LOG"
+type = "string"
+default = "info,hyper=warn"
+
+[flags.api-url]
+env = "API_URL"
+type = "string"
+default = "https://default.example.invalid"
+
+[flags.database-url]
+env = "DATABASE_URL"
+type = "string"
+
+[flags.api-token]
+env = "API_TOKEN"
+type = "string"
