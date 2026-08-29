@@ -20,14 +20,17 @@
     "tool-errors",
     "schema",
     "auth",
-    "transport-restart"
+    "transport-restart",
+    "bounded-frame-recovery",
+    "strict-tool-arguments",
+    "build-execution-opt-in"
   ],
   "sources": [
     {
       "fullName": "file-tunnel/ftnl-mcp-server.rs",
       "exists": true,
-      "branch": "main",
-      "sha": "fcad944992919ea9421d2e79ac2a88c549824f2b",
+      "branch": "den-3384-mcp-server-hardening",
+      "sha": "5e55b53808c8add13fda7496ef19c27ef8d17718",
       "visibility": "private"
     }
   ],
