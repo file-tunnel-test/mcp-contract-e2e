@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "fullName": "file-tunnel/ftnl-mcp-server.rs",
+    "branch": "den-3384-mcp-server-hardening",
+    "sha": "5e55b53808c8add13fda7496ef19c27ef8d17718"
+  },
+  "transport": {
+    "kind": "stdio",
+    "remoteListener": false,
+    "stdoutWireOnly": true,
+    "maxInboundFrameBytes": 1048576,
+    "rejectedFrameBehavior": "recover-next-line",
+    "rejectedFramePayloadLogged": false
+  },
+  "buildTools": {
+    "environmentVariable": "FTNL_ENABLE_BUILD_TOOLS",
+    "enabledValue": "1",
+    "enabledByDefault": false,
+    "mayExecuteRepositoryCode": true
+  },
+  "toolContract": {
+    "toolCount": 28,
+    "parameterizedToolSchemas": 15,
+    "unknownArguments": "reject"
+  },
+  "resourceBounds": {
+    "maxLocalRepos": 64,
+    "maxLocalEntriesInspected": 256
+  },
+  "identityBoundary": {
+    "localTrustBoundary": "spawning-process-and-os-account",
+    "bluetoothIsIdentity": false,
+    "remoteTransportRequiresSharedAuth": true,
+    "productAuthorizationSeparate": true
+  },
+  "verifiedTests": {
+    "unit": 67,
+    "boundedProcess": 8,
+    "httpHardening": 1,
+    "runtimeArchitecture": 3,
+    "stdioIntegration": 9,
+    "total": 88,
+    "repositoryGate": "nix develop --command agent-check"
+  }
+}

@@ -1,0 +1,63 @@
+name: ftnl-mcp hardened runtime
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ftnl-mcp-hardening-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  FTNL_MCP_REV: 5e55b53808c8add13fda7496ef19c27ef8d17718
+
+jobs:
+  contract-evidence:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out public harness without credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          show-progress: false
+      - name: Validate generated and hardened contracts
+        run: |
+          node scripts/validate-plan.mjs
+          node scripts/validate-hardening-evidence.mjs
+          node --check scripts/test-ftnl-mcp-runtime.mjs
+
+  private-runtime:
+    if: ${{ vars.ENABLE_TEST_FLEET_INTEGRATION == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out public harness without credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          show-progress: false
+      - name: Check out immutable private MCP source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: file-tunnel/ftnl-mcp-server.rs
+          ref: ${{ env.FTNL_MCP_REV }}
+          path: vendor/ftnl-mcp-server
+          token: ${{ secrets.TEST_FLEET_READ_TOKEN }}
+          persist-credentials: false
+          show-progress: false
+      - name: Install pinned Rust toolchain
+        uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+        with:
+          toolchain: 1.97.1
+      - name: Verify immutable source and build
+        run: |
+          test "$(git -C vendor/ftnl-mcp-server rev-parse HEAD)" = "${FTNL_MCP_REV}"
+          cargo build --locked --release --manifest-path vendor/ftnl-mcp-server/Cargo.toml
+      - name: Run external MCP process contract
+        run: node scripts/test-ftnl-mcp-runtime.mjs "$GITHUB_WORKSPACE/vendor/ftnl-mcp-server/target/release/ftnl-mcp"
