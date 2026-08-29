@@ -17,7 +17,7 @@ Source organization: `file-tunnel`
 
 | Source | Commit | Branch observed |
 |---|---:|---|
-| `file-tunnel/ftnl-mcp-server.rs` | `5e55b53808c8add13fda7496ef19c27ef8d17718` | `den-3384-mcp-server-hardening` |
+| `file-tunnel/ftnl-mcp-server.rs` | `6a945ae15f02ad08c3417a469c3ad9d6eb8a1e28` | `main` |
 
 ## Dependency lanes
 
@@ -27,17 +27,5 @@ Source organization: `file-tunnel`
 
 ## Running
 
-Every pull request validates the generated plan and sanitized hardening evidence without cross-organization credentials:
+The pull-request workflow validates the generated contract without cross-organization credentials. Product-specific files outside the generated file set are preserved and must add executable assertions without weakening the base contract. Full integration is intentionally release-gated until required source repositories and organization read credentials are present. The generic protected lane reports source-access status only; source certification requires a product-specific executable overlay. A skipped integration job is not source certification. Run the profile-specific checks recorded in `test-plan.json` after materializing the submodule, Zed, or native-package lane.
 
-```sh
-node scripts/validate-plan.mjs
-node scripts/validate-hardening-evidence.mjs
-```
-
-The executable lane checks a locally built or gated private-source binary:
-
-```sh
-node scripts/test-ftnl-mcp-runtime.mjs /absolute/path/to/ftnl-mcp
-```
-
-It proves oversized-frame recovery, non-reflection of rejected frame contents, strict tool arguments, the 28-tool catalog, and fail-closed Cargo execution. GitHub runs that lane only when the test-fleet integration variable and least-privilege private-repository read credential are configured; the public pull-request lane never receives the credential.
