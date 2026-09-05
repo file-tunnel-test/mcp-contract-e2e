@@ -7,6 +7,10 @@ const readJson = (relativePath) =>
 const evidence = readJson('fixtures/mcp-hardening-contract.json');
 const pins = readJson('source-pins.json');
 const plan = readJson('test-plan.json');
+const workflow = fs.readFileSync(
+  new URL('../.github/workflows/ftnl-mcp-hardening.yml', import.meta.url),
+  'utf8',
+);
 const pinned = pins.sources[evidence.source.fullName];
 const planned = plan.sources.find((source) => source.fullName === evidence.source.fullName);
 
@@ -14,13 +18,14 @@ assert.equal(evidence.schemaVersion, 1);
 assert.match(evidence.source.sha, /^[0-9a-f]{40}$/);
 assert.deepEqual(evidence.source, {
   fullName: 'file-tunnel/ftnl-mcp-server.rs',
-  branch: 'den-3384-mcp-server-hardening',
+  branch: 'main',
   sha: evidence.source.sha,
 });
 assert.equal(pinned.sha, evidence.source.sha);
 assert.equal(pinned.branch, evidence.source.branch);
 assert.equal(planned.sha, evidence.source.sha);
 assert.equal(planned.branch, evidence.source.branch);
+assert.match(workflow, new RegExp(`FTNL_MCP_REV:\\s*${evidence.source.sha}`));
 
 assert.deepEqual(evidence.transport, {
   kind: 'stdio',
@@ -57,7 +62,7 @@ const countedTests = [
   evidence.verifiedTests.stdioIntegration,
 ].reduce((sum, count) => sum + count, 0);
 assert.equal(evidence.verifiedTests.total, countedTests);
-assert.ok(evidence.verifiedTests.total >= 88);
+assert.ok(evidence.verifiedTests.total >= 92);
 assert.equal(evidence.verifiedTests.repositoryGate, 'nix develop --command agent-check');
 
 const serialized = JSON.stringify(evidence);

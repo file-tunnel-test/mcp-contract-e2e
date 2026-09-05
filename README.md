@@ -17,7 +17,7 @@ Source organization: `file-tunnel`
 
 | Source | Commit | Branch observed |
 |---|---:|---|
-| `file-tunnel/ftnl-mcp-server.rs` | `5e55b53808c8add13fda7496ef19c27ef8d17718` | `den-3384-mcp-server-hardening` |
+| `file-tunnel/ftnl-mcp-server.rs` | `63bed4fe6638b05a6dd333e11fb932f4c3dedb45` | `main` |
 
 ## Dependency lanes
 
