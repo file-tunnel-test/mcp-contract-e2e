@@ -29,8 +29,8 @@
     {
       "fullName": "file-tunnel/ftnl-mcp-server.rs",
       "exists": true,
-      "branch": "den-3384-mcp-server-hardening",
-      "sha": "5e55b53808c8add13fda7496ef19c27ef8d17718",
+      "branch": "main",
+      "sha": "63bed4fe6638b05a6dd333e11fb932f4c3dedb45",
       "visibility": "private"
     }
   ],

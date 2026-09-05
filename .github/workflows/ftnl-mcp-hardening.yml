@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  FTNL_MCP_REV: 5e55b53808c8add13fda7496ef19c27ef8d17718
+  FTNL_MCP_REV: 63bed4fe6638b05a6dd333e11fb932f4c3dedb45
 
 jobs:
   contract-evidence:
